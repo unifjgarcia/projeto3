@@ -1,7 +1,6 @@
-#include <stdio.h>
 #include "lab.h"
+#include <stdio.h>
 
-// Função para encontrar o comprimento de uma string personalizada
 size_t meu_strlen(const char *str) {
     size_t len = 0;
     while (str[len] != '\0') {
@@ -10,14 +9,13 @@ size_t meu_strlen(const char *str) {
     return len;
 }
 
-// Função para remover a quebra de linha de uma string lida com fgets
 void removerQuebraLinha(char *str) {
     size_t len = meu_strlen(str);
     if (len > 0 && str[len - 1] == '\n') {
         str[len - 1] = '\0';
     }
 }
-//Criando a opção de cadastrar as tarefas
+
 void cadastrarTarefa(FILE *arquivo) {
     struct Tarefa tarefa;
 
@@ -25,11 +23,11 @@ void cadastrarTarefa(FILE *arquivo) {
     scanf("%d", &tarefa.prioridade);
     getchar(); // Consumir o caractere de nova linha deixado pelo scanf
 
-    printf("Digite a descriçao da tarefa (até 300 caracteres): ");
+    printf("Digite a descricao da tarefa (ate 300 caracteres): ");
     fgets(tarefa.descricao, sizeof(tarefa.descricao), stdin);
     removerQuebraLinha(tarefa.descricao);
 
-    printf("Digite a categoria da tarefa (até 100 caracteres): ");
+    printf("Digite a categoria da tarefa (ate 100 caracteres): ");
     fgets(tarefa.categoria, sizeof(tarefa.categoria), stdin);
     removerQuebraLinha(tarefa.categoria);
 
@@ -38,41 +36,36 @@ void cadastrarTarefa(FILE *arquivo) {
 
     printf("Tarefa cadastrada com sucesso!\n");
 }
-//Criando a opção de listar as tarefas
-void listarTarefas(FILE *arquivo) {
-    struct Tarefa tarefa;
 
-    // Voltar para o início do arquivo
-    rewind(arquivo);
-
-    printf("Lista de Tarefas:\n");
-
-    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
-        printf("Prioridade: %d\n", tarefa.prioridade);
-        printf("Descrição: %s\n", tarefa.descricao);
-        printf("Categoria: %s\n", tarefa.categoria);
-        printf("\n");
-    }
-}
-//Criando a opção de deletar as tarefas
 void deletarTarefa(FILE *arquivo) {
-    int prioridade;
+    struct Tarefa tarefa;
+    int encontrou = 0;  // Flag para verificar se a tarefa foi encontrada
 
+    int prioridade;
     printf("Digite a prioridade da tarefa que deseja deletar: ");
     scanf("%d", &prioridade);
 
-    // Criar um arquivo temporário para armazenar as tarefas que não serão excluídas
+    // Move o ponteiro de leitura para o início do arquivo
+    fseek(arquivo, 0, SEEK_SET);
+
+    // Abre um arquivo temporário para escrita
     FILE *temporario = fopen("temporario.dat", "wb");
     if (temporario == NULL) {
         perror("Erro ao criar arquivo temporário");
         return;
     }
 
-    struct Tarefa tarefa;
-
-    // Ler as tarefas do arquivo original e copiar para o arquivo temporário, exceto a tarefa a ser deletada
+    // Lê as tarefas do arquivo original e escreve no arquivo temporário, exceto a tarefa a ser deletada
     while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
-        if (tarefa.prioridade != prioridade) {
+        if (tarefa.prioridade == prioridade) {
+            encontrou = 1;
+            printf("Tarefa encontrada e deletada:\n");
+            printf("Prioridade: %d\n", tarefa.prioridade);
+            printf("Descricao: %s\n", tarefa.descricao);
+            printf("Categoria: %s\n", tarefa.categoria);
+            printf("\n");
+        } else {
+            // Escrever todas as tarefas que não correspondem à prioridade no arquivo temporário
             fwrite(&tarefa, sizeof(struct Tarefa), 1, temporario);
         }
     }
@@ -80,10 +73,40 @@ void deletarTarefa(FILE *arquivo) {
     fclose(arquivo);
     fclose(temporario);
 
-    // Substituir o arquivo original pelo arquivo temporário
-    remove("tarefas.dat");
-    rename("temporario.dat", "tarefas.dat");
+    if (!encontrou) {
+        remove("temporario.dat");
+        printf("Tarefa com prioridade %d não encontrada. Nenhuma tarefa foi deletada.\n", prioridade);
+    } else {
+        remove("tarefas.dat");
+        rename("temporario.dat", "tarefas.dat");
+        printf("Tarefa com prioridade %d deletada com sucesso!\n", prioridade);
+    }
 
-    printf("Tarefa deletada com sucesso!\n");
+    // Reabre o arquivo para continuar usando
+    arquivo = fopen("tarefas.dat", "rb+");
+    if (arquivo == NULL) {
+        perror("Erro ao reabrir o arquivo de tarefas");
+        return;
+    }
 }
 
+void listarTarefas(FILE *arquivo) {
+    struct Tarefa tarefa;
+
+    // Move o ponteiro de leitura para o início do arquivo
+    fseek(arquivo, 0, SEEK_SET);
+
+    printf("Lista de Tarefas:\n");
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        printf("Prioridade: %d\n", tarefa.prioridade);
+        printf("Descricao: %s\n", tarefa.descricao);
+        printf("Categoria: %s\n", tarefa.categoria);
+        printf("\n");
+    }
+}
+
+void encerrarPrograma(FILE *arquivo) {
+    fclose(arquivo);
+    printf("Voce saiu!\n");
+}
