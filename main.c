@@ -2,24 +2,23 @@
 #include "lab.h"
 
 int main() {
-    // irformando nossas variaveis e a opção de erro do arquivo.
-    FILE *arquivo;
-    arquivo = fopen("tarefas.dat", "ab+");
+    FILE *arquivo = fopen("tarefas.dat", "ab+");
     if (arquivo == NULL) {
-        perror("Erro ao abrir arquivo de tarefas");
+        perror("Erro ao abrir o arquivo de tarefas");
         return 1;
     }
 
     int opcao;
-// criação da parte do Menu mais estética
+
     do {
         printf("Menu:\n");
         printf("1. Cadastrar Tarefa\n");
         printf("2. Listar Tarefas\n");
         printf("3. Deletar Tarefa\n");
+        printf("4. Sair\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &opcao);
-//Logica do Menu
+
         switch (opcao) {
             case 1:
                 cadastrarTarefa(arquivo);
@@ -30,13 +29,13 @@ int main() {
             case 3:
                 deletarTarefa(arquivo);
                 break;
+            case 4:
+                encerrarPrograma(arquivo);
+                break;
             default:
-                printf("Opção inválida. Tente novamente.\n");
+                printf("Opcao invalida. Tente novamente.\n");
         }
     } while (opcao != 4);
 
-    fclose(arquivo);
-
     return 0;
 }
-
