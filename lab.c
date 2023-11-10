@@ -1,4 +1,5 @@
 #include "lab.h"
+#include <stdio.h>
 
 size_t meu_strlen(const char *str) {
     size_t len = 0;
