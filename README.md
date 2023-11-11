@@ -1,1 +1,3 @@
-# projeto3
+Colaborador: João Pedro Sabino Garcia - RA: 24.123.038-2
+
+O projeto se baseia em um cadastro de tarefas, das quais tem como atributos sua prioridade, descrição, categoria e estado. Além disso, o programa tem capacidade do usuário conseguir alterar os atributos da sua tarefa, listá-las, filtrar a lista a partir dos atributos ( ou seja, se o usuário quer ver apenas as tarefas da prioridade 1, ela consegue) e exportar as informações em arquivos de texto direcionados da sua escolha. O programa também armazena os dados salvos em um arquivo binário do qual após encerrar o programa e rodá-lo novamente, as informações ainda estarão salvas. 
