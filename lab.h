@@ -8,6 +8,7 @@ struct Tarefa {
     int prioridade;
     char descricao[300];
     char categoria[100];
+    char estado[20];
 };
 
 size_t meu_strlen(const char *str);
