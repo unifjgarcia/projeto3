@@ -17,6 +17,7 @@ void removerQuebraLinha(char *str);
 void cadastrarTarefa(FILE *arquivo);
 void deletarTarefa(FILE *arquivo);
 void listarTarefas(FILE *arquivo);
+void alterarTarefa(FILE *arquivo);
 void encerrarPrograma(FILE *arquivo);
 
 

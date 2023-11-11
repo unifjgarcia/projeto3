@@ -147,6 +147,93 @@ void listarTarefas(FILE *arquivo) {
     }
 }
 
+// Função para alterar uma tarefa no arquivo com base na prioridade
+void alterarTarefa(FILE *arquivo) {
+    int prioridade;
+    printf("Digite a prioridade da tarefa que deseja alterar: ");
+    scanf("%d", &prioridade);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    struct Tarefa tarefa;
+    int encontrou = 0;
+
+    FILE *temporario = fopen("temporario.dat", "wb");
+    if (temporario == NULL) {
+        perror("Erro ao criar arquivo temporário");
+        return;
+    }
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        if (tarefa.prioridade == prioridade) {
+            encontrou = 1;
+            printf("Tarefa encontrada. Escolha o campo que deseja alterar:\n");
+            printf("1. Prioridade\n");
+            printf("2. Descricao\n");
+            printf("3. Categoria\n");
+            printf("4. Estado\n");
+
+            int opcaoCampo;
+            scanf("%d", &opcaoCampo);
+
+            switch (opcaoCampo) {
+                case 1:
+                    printf("Digite a nova prioridade: ");
+                    scanf("%d", &tarefa.prioridade);
+                    break;
+                case 2:
+                    printf("Digite a nova descricao: ");
+                    scanf(" %[^\n]s", tarefa.descricao);
+                    break;
+                case 3:
+                    printf("Digite a nova categoria: ");
+                    scanf(" %[^\n]s", tarefa.categoria);
+                    break;
+                case 4:
+                    printf("Escolha o novo estado:\n");
+                    printf("1. Completo\n");
+                    printf("2. Em andamento\n");
+                    printf("3. Nao iniciado\n");
+
+                    int opcaoEstado;
+                    scanf("%d", &opcaoEstado);
+
+                    if (opcaoEstado >= 1 && opcaoEstado <= 3) {
+                        snprintf(tarefa.estado, sizeof(tarefa.estado), "%s",
+                                 (opcaoEstado == 1) ? "Completo" :
+                                 (opcaoEstado == 2) ? "Em andamento" : "Nao iniciado");
+                    } else {
+                        printf("Opcao invalida. O estado da tarefa permanecera o mesmo.\n");
+                    }
+                    break;
+                default:
+                    printf("Opcao invalida. Nenhum campo foi alterado.\n");
+                    break;
+            }
+        }
+
+        fwrite(&tarefa, sizeof(struct Tarefa), 1, temporario);
+    }
+
+    fclose(arquivo);
+    fclose(temporario);
+
+    if (!encontrou) {
+        remove("temporario.dat");
+        printf("Tarefa com prioridade %d nao encontrada. Nenhum campo foi alterado.\n", prioridade);
+    } else {
+        remove("tarefas.dat");
+        rename("temporario.dat", "tarefas.dat");
+        printf("Tarefa com prioridade %d alterada com sucesso!\n", prioridade);
+    }
+
+    arquivo = fopen("tarefas.dat", "rb+");
+    if (arquivo == NULL) {
+        perror("Erro ao reabrir o arquivo de tarefas");
+        return;
+    }
+}
+
 // Função para encerrar o programa, fechando o arquivo
 void encerrarPrograma(FILE *arquivo) {
     fclose(arquivo);
