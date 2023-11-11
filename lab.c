@@ -234,6 +234,146 @@ void alterarTarefa(FILE *arquivo) {
     }
 }
 
+// Função para filtrar tarefas por prioridade
+void filtrarPorPrioridade(FILE *arquivo) {
+    int prioridade;
+    printf("Digite a prioridade desejada: ");
+    scanf("%d", &prioridade);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    struct Tarefa tarefa;
+    int encontrou = 0;
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        if (tarefa.prioridade == prioridade) {
+            encontrou = 1;
+            printf("Prioridade: %d\n", tarefa.prioridade);
+            printf("Descricao: %s\n", tarefa.descricao);
+            printf("Categoria: %s\n", tarefa.categoria);
+            printf("Estado: %s\n", tarefa.estado);
+            printf("\n");
+        }
+    }
+
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada com a prioridade %d.\n", prioridade);
+    }
+}
+
+// Função auxiliar para comparar estados de tarefas
+int compararEstados(const char *estado1, const char *estado2) {
+    while (*estado1 != '\0' && *estado2 != '\0') {
+        if (*estado1 != *estado2) {
+            return 0;  // Caracteres diferentes, estados diferentes
+        }
+        estado1++;
+        estado2++;
+    }
+
+    // Chegou ao final de ambos os estados
+    return (*estado1 == '\0' && *estado2 == '\0');
+}
+
+// Função para filtrar tarefas por estado
+void filtrarPorEstado(FILE *arquivo) {
+    char estado[20];
+    printf("Digite o estado desejado (Completo, Em andamento, Nao iniciado, Indeterminado): ");
+    scanf(" %[^\n]s", estado);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    struct Tarefa tarefa;
+    int encontrou = 0;
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        if (compararEstados(tarefa.estado, estado)) {
+            encontrou = 1;
+            printf("Prioridade: %d\n", tarefa.prioridade);
+            printf("Descricao: %s\n", tarefa.descricao);
+            printf("Categoria: %s\n", tarefa.categoria);
+            printf("Estado: %s\n", tarefa.estado);
+            printf("\n");
+        }
+    }
+
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada com o estado %s.\n", estado);
+    }
+}
+
+// Função auxiliar para comparar categorias de tarefas
+int compararCategorias(const char *categoria1, const char *categoria2) {
+    while (*categoria1 != '\0' && *categoria2 != '\0') {
+        if (*categoria1 != *categoria2) {
+            return 0;  // Caracteres diferentes, categorias diferentes
+        }
+        categoria1++;
+        categoria2++;
+    }
+
+    // Chegou ao final de ambas as categorias
+    return (*categoria1 == '\0' && *categoria2 == '\0');
+}
+
+// Função para filtrar tarefas por categoria
+void filtrarPorCategoria(FILE *arquivo) {
+    char categoria[100];
+    printf("Digite a categoria desejada: ");
+    scanf(" %[^\n]s", categoria);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    struct Tarefa tarefa;
+    int encontrou = 0;
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        if (compararCategorias(tarefa.categoria, categoria)) {
+            encontrou = 1;
+            printf("Prioridade: %d\n", tarefa.prioridade);
+            printf("Descricao: %s\n", tarefa.descricao);
+            printf("Categoria: %s\n", tarefa.categoria);
+            printf("Estado: %s\n", tarefa.estado);
+            printf("\n");
+        }
+    }
+
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada com a categoria %s.\n", categoria);
+    }
+}
+
+// Função para filtrar tarefas por prioridade e categoria
+void filtrarPorPrioridadeECategoria(FILE *arquivo) {
+    int prioridade;
+    printf("Digite a prioridade desejada: ");
+    scanf("%d", &prioridade);
+
+    char categoria[100];
+    printf("Digite a categoria desejada: ");
+    scanf(" %[^\n]s", categoria);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    struct Tarefa tarefa;
+    int encontrou = 0;
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        if (tarefa.prioridade == prioridade && compararCategorias(tarefa.categoria, categoria)) {
+            encontrou = 1;
+            printf("Prioridade: %d\n", tarefa.prioridade);
+            printf("Descricao: %s\n", tarefa.descricao);
+            printf("Categoria: %s\n", tarefa.categoria);
+            printf("Estado: %s\n", tarefa.estado);
+            printf("\n");
+        }
+    }
+
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada com a prioridade %d e categoria %s.\n", prioridade, categoria);
+    }
+}
+
 // Função para encerrar o programa, fechando o arquivo
 void encerrarPrograma(FILE *arquivo) {
     fclose(arquivo);
