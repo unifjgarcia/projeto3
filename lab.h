@@ -18,6 +18,12 @@ void cadastrarTarefa(FILE *arquivo);
 void deletarTarefa(FILE *arquivo);
 void listarTarefas(FILE *arquivo);
 void alterarTarefa(FILE *arquivo);
+void filtrarPorPrioridade(FILE *arquivo);
+int compararEstados(const char *estado1, const char *estado2);
+void filtrarPorEstado(FILE *arquivo);
+int compararCategorias(const char *categoria1, const char *categoria2);
+void filtrarPorCategoria(FILE *arquivo);
+void filtrarPorPrioridadeECategoria(FILE *arquivo);
 void encerrarPrograma(FILE *arquivo);
 
 
