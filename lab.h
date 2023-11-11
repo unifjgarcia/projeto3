@@ -8,8 +8,10 @@ struct Tarefa {
     int prioridade;
     char descricao[300];
     char categoria[100];
+    char estado[20];
 };
 
+// Chamada das funções utilizadas no código
 size_t meu_strlen(const char *str);
 void removerQuebraLinha(char *str);
 void cadastrarTarefa(FILE *arquivo);
