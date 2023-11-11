@@ -16,7 +16,8 @@ int main() {
         printf("1. Cadastrar Tarefa\n");
         printf("2. Listar Tarefas\n");
         printf("3. Deletar Tarefa\n");
-        printf("4. Sair\n");
+        printf("4. Alterar Tarefa\n");
+        printf("5. Sair\n");
         printf("Escolha uma opcao: ");
         // Recebe a opção escolhida pelo usuário   
         scanf("%d", &opcao);
@@ -32,12 +33,15 @@ int main() {
                 deletarTarefa(arquivo);
                 break;
             case 4:
+                alterarTarefa(arquivo);
+                break;
+            case 5:
                 encerrarPrograma(arquivo);
                 break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
         }
-    } while (opcao != 4);
+    } while (opcao != 5);
     // Retorna 0 indicando que o programa foi executado com sucesso
     return 0;
 }
