@@ -24,6 +24,9 @@ void filtrarPorEstado(FILE *arquivo);
 int compararCategorias(const char *categoria1, const char *categoria2);
 void filtrarPorCategoria(FILE *arquivo);
 void filtrarPorPrioridadeECategoria(FILE *arquivo);
+void exportarPorPrioridade(FILE *arquivo);
+void exportarPorCategoria(FILE *arquivo);
+void exportarPorPrioridadeECategoria(FILE *arquivo);
 void encerrarPrograma(FILE *arquivo);
 
 

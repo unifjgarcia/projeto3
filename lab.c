@@ -374,6 +374,140 @@ void filtrarPorPrioridadeECategoria(FILE *arquivo) {
     }
 }
 
+// Função para exportar tarefas por prioridade para um arquivo
+void exportarPorPrioridade(FILE *arquivo) {
+    int prioridade;
+    printf("Digite a prioridade desejada para exportar: ");
+    scanf("%d", &prioridade);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    FILE *arquivoExportado = fopen("ExportaPrioridade.txt", "w");
+    if (arquivoExportado == NULL) {
+        perror("Erro ao criar o arquivo exportado");
+        return;
+    }
+
+    struct Tarefa tarefa;
+
+    while (fread(&tarefa, sizeof(struct Tarefa), 1, arquivo) == 1) {
+        if (tarefa.prioridade == prioridade) {
+            fprintf(arquivoExportado, "%d, %s, %s, %s\n", tarefa.prioridade, tarefa.categoria, tarefa.estado, tarefa.descricao);
+        }
+    }
+
+    fclose(arquivoExportado);
+
+    printf("Tarefas da prioridade %d exportadas para o arquivo ExportaPrioridade.txt com sucesso!\n", prioridade);
+}
+
+
+// Função para exportar tarefas por categoria para um arquivo
+void exportarPorCategoria(FILE *arquivo) {
+    char categoria[100];
+    printf("Digite a categoria desejada para exportar: ");
+    scanf(" %[^\n]s", categoria);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    FILE *arquivoExportado = fopen("ExportaCategoria.txt", "w");
+    if (arquivoExportado == NULL) {
+        perror("Erro ao criar o arquivo exportado");
+        return;
+    }
+
+    struct Tarefa tarefas[1000];
+    int quantidadeTarefas = 0;
+
+    while (fread(&tarefas[quantidadeTarefas], sizeof(struct Tarefa), 1, arquivo) == 1) {
+        quantidadeTarefas++;
+    }
+
+    // Ordenar as tarefas por prioridade (usando Bubble Sort para simplicidade)
+    for (int i = 0; i < quantidadeTarefas - 1; i++) {
+        for (int j = 0; j < quantidadeTarefas - i - 1; j++) {
+            if (tarefas[j].prioridade > tarefas[j + 1].prioridade) {
+                // Trocar as tarefas de lugar
+                struct Tarefa temp = tarefas[j];
+                tarefas[j] = tarefas[j + 1];
+                tarefas[j + 1] = temp;
+            }
+        }
+    }
+
+    int encontrou = 0;
+
+    for (int i = 0; i < quantidadeTarefas; i++) {
+        if (compararCategorias(tarefas[i].categoria, categoria)) {
+            encontrou = 1;
+            fprintf(arquivoExportado, "%d, %s, %s, %s\n", tarefas[i].prioridade, tarefas[i].categoria, tarefas[i].estado, tarefas[i].descricao);
+        }
+    }
+
+    fclose(arquivoExportado);
+
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada na categoria %s.\n", categoria);
+    } else {
+        printf("Tarefas na categoria %s exportadas para o arquivo ExportaCategoria.txt com sucesso!\n", categoria);
+    }
+}
+
+// Função para exportar tarefas por prioridade e categoria para um arquivo
+void exportarPorPrioridadeECategoria(FILE *arquivo) {
+    char categoria[100];
+    printf("Digite a categoria desejada para exportar: ");
+    scanf(" %[^\n]s", categoria);
+
+    int prioridade;
+    printf("Digite a prioridade desejada para exportar: ");
+    scanf("%d", &prioridade);
+
+    fseek(arquivo, 0, SEEK_SET);
+
+    FILE *arquivoExportado = fopen("ExportaPrioridadeCategoria.txt", "w");
+    if (arquivoExportado == NULL) {
+        perror("Erro ao criar o arquivo exportado");
+        return;
+    }
+
+    struct Tarefa tarefas[1000];
+    int quantidadeTarefas = 0;
+
+    while (fread(&tarefas[quantidadeTarefas], sizeof(struct Tarefa), 1, arquivo) == 1) {
+        quantidadeTarefas++;
+    }
+
+    // Ordenar as tarefas por prioridade (usando Bubble Sort para simplicidade)
+    for (int i = 0; i < quantidadeTarefas - 1; i++) {
+        for (int j = 0; j < quantidadeTarefas - i - 1; j++) {
+            if (tarefas[j].prioridade > tarefas[j + 1].prioridade) {
+                // Trocar as tarefas de lugar
+                struct Tarefa temp = tarefas[j];
+                tarefas[j] = tarefas[j + 1];
+                tarefas[j + 1] = temp;
+            }
+        }
+    }
+
+    int encontrou = 0;
+
+    for (int i = 0; i < quantidadeTarefas; i++) {
+        if (compararCategorias(tarefas[i].categoria, categoria) && tarefas[i].prioridade == prioridade) {
+            encontrou = 1;
+            fprintf(arquivoExportado, "%d, %s, %s, %s\n", tarefas[i].prioridade, tarefas[i].categoria, tarefas[i].estado, tarefas[i].descricao);
+        }
+    }
+
+    fclose(arquivoExportado);
+
+    if (!encontrou) {
+        printf("Nenhuma tarefa encontrada na categoria %s com prioridade %d.\n", categoria, prioridade);
+    } else {
+        printf("Tarefas na categoria %s com prioridade %d exportadas para o arquivo ExportaPrioridadeCategoria.txt com sucesso!\n", categoria, prioridade);
+    }
+}
+
 // Função para encerrar o programa, fechando o arquivo
 void encerrarPrograma(FILE *arquivo) {
     fclose(arquivo);

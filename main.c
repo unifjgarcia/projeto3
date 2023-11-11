@@ -21,10 +21,15 @@ int main() {
         printf("6. Filtrar por Estado\n");
         printf("7. Filtrar por Categoria\n");
         printf("8. Filtrar por Prioridade e Categoria\n");
-        printf("9. Sair\n");
+        printf("9. Exportar por Prioridade\n");
+        printf("10. Exportar por Categoria\n");
+        printf("11. Exportar por Prioridade e Categoria\n");
+        printf("12. Sair\n");
         printf("Escolha uma opcao: ");
-        // Recebe a opção escolhida pelo usuário   
+
+        // Recebe a opção escolhida pelo usuário
         scanf("%d", &opcao);
+
         // Executa a operação correspondente à opção escolhida
         switch (opcao) {
             case 1:
@@ -52,11 +57,21 @@ int main() {
                 filtrarPorPrioridadeECategoria(arquivo);
                 break;
             case 9:
+                exportarPorPrioridade(arquivo);
+                break;
+            case 10:
+                exportarPorCategoria(arquivo);
+                break;
+            case 11:
+                exportarPorPrioridadeECategoria(arquivo);
+                break;
+            case 12:
                 encerrarPrograma(arquivo);
+                break;
             default:
                 printf("Opcao invalida. Tente novamente.\n");
         }
-    } while (opcao != 9);
+    } while (opcao != 12);
     // Retorna 0 indicando que o programa foi executado com sucesso
     return 0;
 }
